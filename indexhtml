@@ -1,1 +1,1035 @@
 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenali Bunyi Binatang - Kelas 2 SD</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Nunito & Fredoka untuk keterbacaan tinggi dan ramah anak -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Pengaturan Font Utama Ramah Anak */
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #F0F9FF;
+            background-image: radial-gradient(#BAE6FD 2px, transparent 2px);
+            background-size: 28px 28px;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        h1, h2, .font-display {
+            font-family: 'Fredoka', cursive, sans-serif;
+        }
+
+        /* Animasi Getar Kartu Saat Bunyi Aktif */
+        @keyframes cardVibrateShort {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            20% { transform: translate(-4px, 2px) rotate(-2deg); }
+            40% { transform: translate(4px, -2px) rotate(2deg); }
+            60% { transform: translate(-4px, -2px) rotate(-1deg); }
+            80% { transform: translate(4px, 2px) rotate(1deg); }
+        }
+
+        @keyframes cardVibrateLong {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.04) translateY(-3px); }
+            50% { transform: scale(1.02) translateY(2px); }
+            75% { transform: scale(1.05) translateY(-2px); }
+        }
+
+        @keyframes cardRoar {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            15% { transform: scale(1.08) rotate(-3deg); }
+            30% { transform: scale(1.08) rotate(3deg); }
+            45% { transform: scale(1.06) rotate(-3deg); }
+            60% { transform: scale(1.06) rotate(3deg); }
+            75% { transform: scale(1.04) rotate(-1deg); }
+        }
+
+        .anim-short {
+            animation: cardVibrateShort 0.35s ease-in-out infinite;
+        }
+
+        .anim-long {
+            animation: cardVibrateLong 0.8s ease-in-out infinite;
+        }
+
+        .anim-roar {
+            animation: cardRoar 0.5s ease-in-out infinite;
+        }
+
+        /* Animasi Balon Komik Onomatope */
+        @keyframes comicPop {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            50% { transform: scale(1.12); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .comic-pop {
+            animation: comicPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Animasi Riak Getaran Visual (Ripple) */
+        @keyframes pulseRing {
+            0% { transform: scale(0.85); opacity: 0.8; }
+            100% { transform: scale(1.55); opacity: 0; }
+        }
+
+        .vibration-ring {
+            animation: pulseRing 1s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+        }
+
+        /* Gaya Balon Komik */
+        .speech-bubble {
+            position: relative;
+            background: #FFFFFF;
+            border: 4px solid #1E293B;
+            box-shadow: 0 6px 0 #1E293B;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 16px 14px 0;
+            border-style: solid;
+            border-color: #1E293B transparent transparent transparent;
+        }
+
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 12px 10px 0;
+            border-style: solid;
+            border-color: #FFFFFF transparent transparent transparent;
+            z-index: 1;
+        }
+
+        /* Animasi Bintang Kuis */
+        @keyframes starBounce {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.35) rotate(15deg); }
+        }
+        .star-win {
+            animation: starBounce 0.6s ease-in-out;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+
+    <!-- HEADER / NAVIGASI ATAS -->
+    <header class="bg-white border-b-4 border-sky-200 shadow-sm sticky top-0 z-30">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <!-- Judul Aplikasi -->
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-amber-400 border-4 border-slate-800 flex items-center justify-center text-2xl shadow-[0_3px_0_#1e293b]">
+                    👀
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold text-slate-900 leading-tight">
+                        Melihat Bunyi Binatang
+                    </h1>
+                    <p class="text-xs sm:text-sm font-bold text-sky-700">
+                        Kelas 2 SD • Belajar Visual & Getaran
+                    </p>
+                </div>
+            </div>
+
+            <!-- Kontrol Mode & Audio Opsional -->
+            <div class="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                <!-- Tombol Switch Mode -->
+                <div class="bg-slate-100 p-1.5 rounded-2xl border-2 border-slate-300 flex gap-1.5">
+                    <button id="btnModeBelajar" onclick="switchMode('belajar')" 
+                        class="px-3 sm:px-4 py-2 rounded-xl font-extrabold text-sm sm:text-base transition-all bg-sky-500 text-white shadow-[0_3px_0_#0369a1] flex items-center gap-1.5">
+                        <span>📖</span> Belajar
+                    </button>
+                    <button id="btnModeKuis" onclick="switchMode('kuis')" 
+                        class="px-3 sm:px-4 py-2 rounded-xl font-extrabold text-sm sm:text-base transition-all text-slate-700 hover:bg-white flex items-center gap-1.5">
+                        <span>🎯</span> Kuis Tebak
+                    </button>
+                </div>
+
+                <!-- Tombol Suara Opsional (Untuk Sisa Pendengaran / Guru) -->
+                <button id="btnToggleAudio" onclick="toggleAudio()" title="Nyalakan atau matikan suara bantu"
+                    class="px-3 py-2.5 rounded-2xl border-2 border-slate-800 bg-emerald-100 text-emerald-900 font-extrabold text-xs sm:text-sm shadow-[0_3px_0_#1e293b] active:translate-y-0.5 flex items-center gap-1.5 transition-all">
+                    <span id="audioIcon" class="text-lg">🔊</span>
+                    <span id="audioLabel" class="hidden md:inline">Suara: Hidup</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- KONTEN UTAMA -->
+    <main class="flex-grow max-w-6xl w-full mx-auto px-4 py-6">
+
+        <!-- ========================================================= -->
+        <!-- BAGIAN 1: PANGGUNG VISUALISASI GELOMBANG & TEKS BUNYI     -->
+        <!-- ========================================================= -->
+        <section id="visualStage" class="mb-8 bg-white rounded-3xl border-4 border-slate-800 shadow-[0_8px_0_#1e293b] overflow-hidden transition-all">
+            <div class="bg-amber-300 border-b-4 border-slate-800 px-5 py-2.5 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="inline-block w-3.5 h-3.5 rounded-full bg-rose-500 border-2 border-slate-800"></span>
+                    <span class="inline-block w-3.5 h-3.5 rounded-full bg-amber-500 border-2 border-slate-800"></span>
+                    <span class="inline-block w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-slate-800"></span>
+                    <span class="font-extrabold text-slate-900 text-sm sm:text-base ml-1">LAYAR GELOMBANG & RITME BUNYI</span>
+                </div>
+                <span id="vibrateBadge" class="text-xs font-extrabold px-2.5 py-1 rounded-full bg-white border-2 border-slate-800 text-slate-800">
+                    📳 Getar Siap
+                </span>
+            </div>
+
+            <div class="p-5 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                
+                <!-- Kolom Kiri: Ikon Binatang & Balon Teks Onomatope -->
+                <div class="lg:col-span-5 flex flex-col items-center justify-center text-center relative py-2">
+                    <!-- Balon Komik Teks Bunyi -->
+                    <div id="stageBubble" class="speech-bubble rounded-3xl px-6 py-3 mb-5 min-w-[200px] transition-transform">
+                        <span id="stageOnomatopoeia" class="font-display text-3xl sm:text-4xl font-bold tracking-wider text-rose-600">
+                            PILIH BINATANG!
+                        </span>
+                    </div>
+
+                    <!-- Lingkaran Binatang dengan Riak Getaran -->
+                    <div class="relative flex items-center justify-center my-1">
+                        <div id="stageRipple1" class="hidden absolute w-32 h-32 rounded-full border-4 border-amber-400 vibration-ring"></div>
+                        <div id="stageRipple2" class="hidden absolute w-32 h-32 rounded-full border-4 border-sky-400 vibration-ring" style="animation-delay: 0.4s;"></div>
+                        
+                        <div id="stageAvatarBg" class="w-32 h-32 sm:w-36 sm:h-36 rounded-full bg-sky-100 border-4 border-slate-800 flex items-center justify-center text-7xl sm:text-8xl shadow-inner relative z-10 transition-transform">
+                            🐾
+                        </div>
+                    </div>
+
+                    <h2 id="stageAnimalName" class="mt-3 text-2xl sm:text-3xl font-extrabold text-slate-900">
+                        Klik Kartu di Bawah
+                    </h2>
+                </div>
+
+                <!-- Kolom Kanan: Visualizer Gelombang Suara & Keterangan Cara Bunyi -->
+                <div class="lg:col-span-7 flex flex-col gap-4">
+                    
+                    <!-- Kotak Equalizer / Gelombang Suara Warna-warni -->
+                    <div class="bg-slate-900 rounded-2xl p-4 border-4 border-slate-800 relative">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-sky-300">
+                                📊 Bentuk Gelombang & Ritme Bunyi
+                            </span>
+                            <span id="stageRhythmTag" class="text-xs font-extrabold px-2.5 py-0.5 rounded-lg bg-slate-800 text-amber-300 border border-slate-600">
+                                Menunggu...
+                            </span>
+                        </div>
+                        
+                        <!-- Batang-batang Equalizer Visual -->
+                        <div id="equalizerContainer" class="h-28 sm:h-32 flex items-end justify-center gap-1.5 sm:gap-2 px-2 py-2 bg-slate-950/60 rounded-xl border border-slate-800">
+                            <!-- 16 batang visualizer di-generate lewat JS -->
+                        </div>
+
+                        <!-- Indikator Pola Panjang-Pendek (Morse Visual) -->
+                        <div class="mt-3 flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-400">Pola Ketukan:</span>
+                            <div id="rhythmDots" class="flex items-center gap-2 flex-wrap">
+                                <span class="text-xs text-slate-500 italic">Belum ada bunyi dipilih</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kotak Keterangan Cara Bunyi (Ramah Anak Kelas 2 SD) -->
+                    <div id="stageDescBox" class="bg-sky-50 rounded-2xl p-4 border-3 border-sky-300 flex items-start gap-3.5">
+                        <div class="w-11 h-11 rounded-xl bg-sky-500 text-white font-bold text-2xl flex items-center justify-center shrink-0 border-2 border-slate-800">
+                            💬
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-slate-900 text-base sm:text-lg">
+                                Seperti Apa Bunyinya?
+                            </h3>
+                            <p id="stageDescription" class="text-slate-700 font-bold text-sm sm:text-base mt-0.5 leading-relaxed">
+                                Ayo pilih salah satu gambar binatang di bawah ini untuk melihat gerakan gelombang bunyi dan merasakan getarannya!
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- BAGIAN 2: MODE BELAJAR (GRID KARTU BINATANG)              -->
+        <!-- ========================================================= -->
+        <section id="sectionBelajar" class="block">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                <h2 class="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2">
+                    <span>🦁</span> Pilih Binatang & Lihat Bunyinya
+                </h2>
+                <span class="text-sm font-bold text-slate-600 bg-white px-3 py-1 rounded-full border-2 border-slate-300">
+                    Ketuk kartu untuk mengulang bunyi
+                </span>
+            </div>
+
+            <!-- Grid Kartu Binatang -->
+            <div id="animalGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <!-- Kartu binatang akan diisi oleh JavaScript -->
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- BAGIAN 3: MODE KUIS INTERAKTIF (TEBAK BUNYI BINATANG)     -->
+        <!-- ========================================================= -->
+        <section id="sectionKuis" class="hidden">
+            <div class="bg-white rounded-3xl border-4 border-slate-800 shadow-[0_8px_0_#1e293b] p-5 sm:p-8">
+                
+                <!-- Header Kuis: Skor & Nomor Soal -->
+                <div class="flex flex-wrap items-center justify-between gap-4 pb-5 border-b-4 border-dashed border-slate-200">
+                    <div class="flex items-center gap-3">
+                        <span class="px-4 py-1.5 rounded-2xl bg-purple-100 border-2 border-purple-400 text-purple-900 font-extrabold text-base sm:text-lg">
+                            Soal <span id="quizNumber">1</span> / <span id="quizTotal">5</span>
+                        </span>
+                        <button onclick="replayQuizClue()" class="px-4 py-1.5 rounded-2xl bg-amber-300 hover:bg-amber-400 border-2 border-slate-800 text-slate-900 font-extrabold text-sm sm:text-base shadow-[0_3px_0_#1e293b] active:translate-y-0.5 flex items-center gap-1.5">
+                            <span>🔄</span> Ulangi Gelombang
+                        </button>
+                    </div>
+
+                    <!-- Bintang Skor -->
+                    <div class="flex items-center gap-2 bg-amber-50 px-4 py-2 rounded-2xl border-2 border-amber-300">
+                        <span class="font-extrabold text-slate-700 text-sm sm:text-base">Bintangmu:</span>
+                        <div id="quizStarsContainer" class="flex items-center gap-1 text-2xl">
+                            <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Area Pertanyaan Kuis -->
+                <div id="quizPlayArea" class="py-6 text-center">
+                    <p class="text-lg sm:text-xl font-extrabold text-slate-700 mb-3">
+                        Binatang manakah yang bunyinya seperti ini?
+                    </p>
+
+                    <!-- Petunjuk Teks Bunyi & Ciri -->
+                    <div class="inline-block bg-rose-50 border-4 border-rose-500 rounded-3xl px-8 py-4 mb-3 shadow-[0_5px_0_#e11d48]">
+                        <span id="quizClueText" class="font-display text-4xl sm:text-5xl font-bold text-rose-600 tracking-wider">
+                            MEONG!
+                        </span>
+                    </div>
+
+                    <p id="quizClueHint" class="text-base sm:text-lg font-bold text-slate-600 max-w-xl mx-auto mb-6">
+                        Petunjuk: Suara panjang dan lembut.
+                    </p>
+
+                    <!-- Kotak Umpan Balik Jawaban -->
+                    <div id="quizFeedback" class="hidden mb-6 max-w-lg mx-auto rounded-2xl p-4 border-4 font-extrabold text-lg">
+                    </div>
+
+                    <!-- Pilihan 3 Kartu Binatang -->
+                    <div id="quizOptionsGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-4xl mx-auto">
+                        <!-- Opsi jawaban di-render lewat JS -->
+                    </div>
+                </div>
+
+                <!-- Area Selesai Kuis -->
+                <div id="quizResultArea" class="hidden py-8 text-center">
+                    <div class="text-7xl mb-4">🏆</div>
+                    <h3 class="font-display text-3xl sm:text-4xl font-bold text-slate-900 mb-2">
+                        Hebat Sekali! Kuis Selesai!
+                    </h3>
+                    <p id="quizFinalScoreText" class="text-xl font-extrabold text-sky-700 mb-6">
+                        Kamu berhasil mengumpulkan 5 dari 5 bintang!
+                    </p>
+                    <button onclick="startQuiz()" class="px-8 py-4 rounded-2xl bg-emerald-400 hover:bg-emerald-500 border-4 border-slate-800 text-slate-900 font-extrabold text-xl shadow-[0_6px_0_#1e293b] active:translate-y-1 transition-all">
+                        🔁 Main Kuis Lagi
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER RAMAH ANAK -->
+    <footer class="mt-10 bg-white border-t-4 border-sky-200 py-4 text-center text-sm font-bold text-slate-600 px-4">
+        Dibuat khusus untuk membantu teman-teman tunarungu kelas 2 SD mengenal bunyi binatang melalui visual & getaran ❤️
+    </footer>
+
+    <!-- JAVASCRIPT LOGIKA APLIKASI -->
+    <script>
+        /**
+         * DATA BINATANG & KARAKTERISTIK BUNYI VISUAL
+         * Setiap binatang memiliki:
+         * - id, name, emoji, bgColor, borderColor, badgeColor
+         * - onomatopoeia: Teks bunyi besar (huruf kapital jelas)
+         * - rhythmType: 'short' (pendek berulang), 'long' (panjang), 'roar' (keras/menggelegar)
+         * - rhythmLabel: Label ritme untuk anak
+         * - description: Penjelasan artikulasi & cara bunyi ramah anak kelas 2 SD
+         * - patternVisual: Array bentuk ketukan visual ('dot' = pendek, 'dash' = panjang)
+         * - vibratePattern: Pola getar dalam milidetik untuk HP/Tablet (Web Vibration API)
+         * - equalizerProfile: Tinggi relatif 16 batang equalizer (0.1 - 1.0)
+         * - soundSteps: Parameter sintesis Web Audio API opsional
+         */
+        const ANIMALS = [
+            {
+                id: 'kucing',
+                name: 'Kucing',
+                emoji: '🐱',
+                bgColor: 'bg-amber-100',
+                borderColor: 'border-amber-500',
+                textColor: 'text-amber-800',
+                onomatopoeia: 'MEONG!',
+                rhythmType: 'long',
+                rhythmLabel: 'Panjang & Lembut',
+                description: 'Suara panjang dan lembut: "Meooong~". Mulut dibuka perlahan lalu menutup pelan.',
+                patternVisual: ['dash'],
+                vibratePattern: [600],
+                equalizerProfile: [0.2, 0.4, 0.7, 0.9, 1.0, 0.95, 0.85, 0.75, 0.65, 0.55, 0.45, 0.35, 0.3, 0.25, 0.2, 0.15],
+                soundSteps: [{ freqStart: 520, freqEnd: 680, duration: 0.35, type: 'triangle' }, { freqStart: 680, freqEnd: 420, duration: 0.45, type: 'triangle' }]
+            },
+            {
+                id: 'anjing',
+                name: 'Anjing',
+                emoji: '🐶',
+                bgColor: 'bg-orange-100',
+                borderColor: 'border-orange-500',
+                textColor: 'text-orange-800',
+                onomatopoeia: 'GUK! GUK!',
+                rhythmType: 'short',
+                rhythmLabel: 'Pendek & Berulang',
+                description: 'Suara pendek, cepat, dan berulang: "Guk! Guk!". Seperti ketukan dua kali yang tegas.',
+                patternVisual: ['dot', 'dot'],
+                vibratePattern: [150, 120, 150],
+                equalizerProfile: [0.1, 0.3, 0.95, 0.8, 0.2, 0.1, 0.1, 0.2, 0.95, 0.85, 0.2, 0.1, 0.1, 0.2, 0.1, 0.1],
+                soundSteps: [{ freqStart: 280, freqEnd: 180, duration: 0.16, type: 'sawtooth' }, { pause: 0.12 }, { freqStart: 300, freqEnd: 190, duration: 0.16, type: 'sawtooth' }]
+            },
+            {
+                id: 'sapi',
+                name: 'Sapi',
+                emoji: '🐮',
+                bgColor: 'bg-emerald-100',
+                borderColor: 'border-emerald-500',
+                textColor: 'text-emerald-800',
+                onomatopoeia: 'MOOOO!',
+                rhythmType: 'long',
+                rhythmLabel: 'Panjang & Berat',
+                description: 'Suara sangat panjang, berat, dan dalam: "Moooo~". Getarannya terasa rendah di dada.',
+                patternVisual: ['dash', 'dash'],
+                vibratePattern: [900],
+                equalizerProfile: [0.5, 0.65, 0.75, 0.8, 0.85, 0.85, 0.85, 0.85, 0.85, 0.8, 0.8, 0.75, 0.7, 0.6, 0.5, 0.4],
+                soundSteps: [{ freqStart: 140, freqEnd: 125, duration: 0.9, type: 'sawtooth' }]
+            },
+            {
+                id: 'ayam',
+                name: 'Ayam Jago',
+                emoji: '🐓',
+                bgColor: 'bg-rose-100',
+                borderColor: 'border-rose-500',
+                textColor: 'text-rose-800',
+                onomatopoeia: 'KUKURUYUK!',
+                rhythmType: 'short',
+                rhythmLabel: '3 Pendek, 1 Panjang',
+                description: 'Suara nyaring di pagi hari: "Ku-ku-ru-yuuuk!". Tiga ketukan pendek lalu satu tarikan panjang di akhir.',
+                patternVisual: ['dot', 'dot', 'dot', 'dash'],
+                vibratePattern: [120, 80, 120, 80, 120, 100, 550],
+                equalizerProfile: [0.6, 0.2, 0.65, 0.2, 0.7, 0.2, 0.85, 0.95, 1.0, 0.95, 0.9, 0.85, 0.75, 0.6, 0.4, 0.2],
+                soundSteps: [
+                    { freqStart: 440, freqEnd: 460, duration: 0.12, type: 'square' }, { pause: 0.06 },
+                    { freqStart: 440, freqEnd: 460, duration: 0.12, type: 'square' }, { pause: 0.06 },
+                    { freqStart: 520, freqEnd: 550, duration: 0.12, type: 'square' }, { pause: 0.06 },
+                    { freqStart: 660, freqEnd: 480, duration: 0.55, type: 'square' }
+                ]
+            },
+            {
+                id: 'kambing',
+                name: 'Kambing',
+                emoji: '🐐',
+                bgColor: 'bg-lime-100',
+                borderColor: 'border-lime-600',
+                textColor: 'text-lime-900',
+                onomatopoeia: 'EMBEK!',
+                rhythmType: 'short',
+                rhythmLabel: 'Bergetar Cepat',
+                description: 'Suara bergetar cepat di tenggorokan: "Em-be-e-e-ek!". Gelombangnya naik-turun rapat.',
+                patternVisual: ['dot', 'dash'],
+                vibratePattern: [150, 60, 80, 50, 80, 50, 80],
+                equalizerProfile: [0.3, 0.7, 0.4, 0.8, 0.45, 0.85, 0.45, 0.85, 0.4, 0.8, 0.4, 0.75, 0.35, 0.6, 0.3, 0.2],
+                soundSteps: [{ freqStart: 340, freqEnd: 310, duration: 0.55, type: 'sawtooth', vibrato: true }]
+            },
+            {
+                id: 'bebek',
+                name: 'Bebek',
+                emoji: '🦆',
+                bgColor: 'bg-yellow-100',
+                borderColor: 'border-yellow-500',
+                textColor: 'text-yellow-900',
+                onomatopoeia: 'KWEK! KWEK!',
+                rhythmType: 'short',
+                rhythmLabel: 'Cempreng & Pendek',
+                description: 'Suara cempreng dan pendek-pendek: "Kwek! Kwek! Kwek!". Berbunyi riang saat berjalan berbaris.',
+                patternVisual: ['dot', 'dot', 'dot'],
+                vibratePattern: [140, 100, 140, 100, 140],
+                equalizerProfile: [0.8, 0.7, 0.1, 0.1, 0.85, 0.75, 0.1, 0.1, 0.8, 0.7, 0.1, 0.1, 0.5, 0.2, 0.1, 0.1],
+                soundSteps: [
+                    { freqStart: 420, freqEnd: 320, duration: 0.15, type: 'sawtooth' }, { pause: 0.09 },
+                    { freqStart: 430, freqEnd: 320, duration: 0.15, type: 'sawtooth' }, { pause: 0.09 },
+                    { freqStart: 410, freqEnd: 300, duration: 0.16, type: 'sawtooth' }
+                ]
+            },
+            {
+                id: 'singa',
+                name: 'Singa',
+                emoji: '🦁',
+                bgColor: 'bg-red-100',
+                borderColor: 'border-red-500',
+                textColor: 'text-red-900',
+                onomatopoeia: 'AUMMM!',
+                rhythmType: 'roar',
+                rhythmLabel: 'Keras & Menggelegar',
+                description: 'Suara sangat besar, keras, dan menggelegar: "Auuummm!". Mulut terbuka lebar dan getarannya kuat sekali.',
+                patternVisual: ['dash', 'dash', 'dash'],
+                vibratePattern: [300, 50, 500],
+                equalizerProfile: [0.6, 0.85, 1.0, 1.0, 1.0, 0.95, 1.0, 0.95, 0.9, 0.85, 0.8, 0.75, 0.65, 0.55, 0.45, 0.3],
+                soundSteps: [{ freqStart: 160, freqEnd: 95, duration: 0.85, type: 'sawtooth' }]
+            },
+            {
+                id: 'burung',
+                name: 'Burung Kecil',
+                emoji: '🐤',
+                bgColor: 'bg-sky-100',
+                borderColor: 'border-sky-500',
+                textColor: 'text-sky-900',
+                onomatopoeia: 'CIT! CIT!',
+                rhythmType: 'short',
+                rhythmLabel: 'Tinggi & Ringan',
+                description: 'Suara kecil, tinggi, dan ringan: "Cit! Cit! Cit!". Gelombangnya ramping dan cepat seperti lompatan kecil.',
+                patternVisual: ['dot', 'dot', 'dot'],
+                vibratePattern: [70, 90, 70, 90, 70],
+                equalizerProfile: [0.1, 0.95, 0.1, 0.1, 0.1, 1.0, 0.1, 0.1, 0.1, 0.9, 0.1, 0.1, 0.1, 0.85, 0.1, 0.1],
+                soundSteps: [
+                    { freqStart: 1200, freqEnd: 1650, duration: 0.09, type: 'sine' }, { pause: 0.08 },
+                    { freqStart: 1250, freqEnd: 1700, duration: 0.09, type: 'sine' }, { pause: 0.08 },
+                    { freqStart: 1300, freqEnd: 1750, duration: 0.09, type: 'sine' }
+                ]
+            }
+        ];
+
+        // Warna-warni batang equalizer agar menarik secara visual
+        const BAR_COLORS = [
+            'bg-rose-500', 'bg-orange-400', 'bg-amber-400', 'bg-yellow-400',
+            'bg-lime-400', 'bg-emerald-400', 'bg-teal-400', 'bg-cyan-400',
+            'bg-sky-400', 'bg-blue-400', 'bg-indigo-400', 'bg-violet-400',
+            'bg-purple-400', 'bg-fuchsia-400', 'bg-pink-400', 'bg-rose-400'
+        ];
+
+        // State Aplikasi
+        let audioEnabled = true;
+        let audioCtx = null;
+        let activeAnimInterval = null;
+        let activeStopTimeout = null;
+        let currentActiveAnimalId = null;
+
+        // State Kuis
+        let quizQuestions = [];
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+        let quizAnswered = false;
+        const TOTAL_QUIZ_QUESTIONS = 5;
+
+        /**
+         * INISIALISASI SAAT HALAMAN DIMUAT
+         */
+        window.addEventListener('DOMContentLoaded', () => {
+            initEqualizerBars();
+            renderAnimalCards();
+            checkVibrationSupport();
+        });
+
+        /**
+         * Cek dukungan Web Vibration API pada perangkat
+         */
+        function checkVibrationSupport() {
+            const badge = document.getElementById('vibrateBadge');
+            if ('vibrate' in navigator) {
+                badge.textContent = '📳 Getar Perangkat Aktif';
+                badge.classList.add('bg-emerald-100', 'text-emerald-900');
+            } else {
+                badge.textContent = '✨ Mode Getar Visual';
+                badge.classList.add('bg-amber-100', 'text-amber-900');
+            }
+        }
+
+        /**
+         * Membuat 16 batang equalizer visual pada panggung utama
+         */
+        function initEqualizerBars() {
+            const container = document.getElementById('equalizerContainer');
+            container.innerHTML = '';
+            for (let i = 0; i < 16; i++) {
+                const bar = document.createElement('div');
+                bar.id = `eq-bar-${i}`;
+                bar.className = `w-2.5 sm:w-4 rounded-t-lg transition-all duration-150 ${BAR_COLORS[i]}`;
+                bar.style.height = '14%';
+                container.appendChild(bar);
+            }
+        }
+
+        /**
+         * Render seluruh kartu binatang di Mode Belajar
+         */
+        function renderAnimalCards() {
+            const grid = document.getElementById('animalGrid');
+            grid.innerHTML = '';
+
+            ANIMALS.forEach(animal => {
+                const card = document.createElement('button');
+                card.id = `card-${animal.id}`;
+                card.type = 'button';
+                card.onclick = () => triggerAnimalVisual(animal, true);
+                card.className = `group text-left bg-white rounded-3xl border-4 border-slate-800 p-4 shadow-[0_6px_0_#1e293b] hover:-translate-y-1 active:translate-y-1 transition-all flex flex-col justify-between focus:outline-none focus:ring-4 focus:ring-sky-400`;
+
+                card.innerHTML = `
+                    <div>
+                        <!-- Atas: Badge Ritme -->
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="text-xs font-extrabold px-2.5 py-1 rounded-xl ${animal.bgColor} ${animal.textColor} border-2 ${animal.borderColor}">
+                                ${animal.rhythmLabel}
+                            </span>
+                            <span class="text-lg" title="Klik untuk melihat bunyi">👁️</span>
+                        </div>
+
+                        <!-- Tengah: Lingkaran Emoji Binatang -->
+                        <div class="w-24 h-24 mx-auto rounded-full ${animal.bgColor} border-3 border-slate-800 flex items-center justify-center text-6xl my-2 group-hover:scale-105 transition-transform">
+                            ${animal.emoji}
+                        </div>
+
+                        <!-- Nama & Teks Bunyi Onomatope -->
+                        <div class="text-center mt-3">
+                            <h3 class="text-xl font-extrabold text-slate-900">${animal.name}</h3>
+                            <div class="mt-1.5 inline-block px-3.5 py-1 rounded-2xl bg-slate-900 text-amber-300 font-display text-xl tracking-wide">
+                                "${animal.onomatopoeia}"
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tombol Aksi Bawah Kartu -->
+                    <div class="mt-4 pt-3 border-t-2 border-slate-100 flex items-center justify-center">
+                        <span class="w-full py-2 px-3 rounded-xl bg-sky-500 group-hover:bg-sky-600 text-white font-extrabold text-sm text-center border-2 border-slate-800 shadow-[0_3px_0_#1e293b]">
+                            ✨ Lihat Bunyi & Getaran
+                        </span>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        /**
+         * MEMICU VISUALISASI BUNYI, GETARAN, DAN AUDIO OPSIONAL
+         * @param {Object} animal - Objek data binatang
+         * @param {Boolean} highlightCard - Apakah kartu di grid ikut bergetar
+         */
+        function triggerAnimalVisual(animal, highlightCard = true) {
+            stopCurrentAnimation();
+            currentActiveAnimalId = animal.id;
+
+            // 1. Perbarui Teks & Ikon di Panggung Utama
+            const stageOnomatopoeia = document.getElementById('stageOnomatopoeia');
+            const stageBubble = document.getElementById('stageBubble');
+            const stageAvatarBg = document.getElementById('stageAvatarBg');
+            const stageAnimalName = document.getElementById('stageAnimalName');
+            const stageRhythmTag = document.getElementById('stageRhythmTag');
+            const stageDescription = document.getElementById('stageDescription');
+            const rhythmDots = document.getElementById('rhythmDots');
+
+            stageOnomatopoeia.textContent = animal.onomatopoeia;
+            stageAnimalName.textContent = animal.name;
+            stageRhythmTag.textContent = `Ritme: ${animal.rhythmLabel}`;
+            stageDescription.textContent = animal.description;
+
+            // Reset & mainkan animasi pop pada balon komik
+            stageBubble.classList.remove('comic-pop');
+            void stageBubble.offsetWidth; // trigger reflow
+            stageBubble.classList.add('comic-pop');
+
+            // Ubah warna & emoji avatar panggung
+            stageAvatarBg.className = `w-32 h-32 sm:w-36 sm:h-36 rounded-full ${animal.bgColor} border-4 border-slate-800 flex items-center justify-center text-7xl sm:text-8xl shadow-inner relative z-10 transition-transform`;
+            stageAvatarBg.textContent = animal.emoji;
+
+            // Tambahkan animasi gerak pada avatar panggung
+            const animClass = animal.rhythmType === 'roar' ? 'anim-roar' : (animal.rhythmType === 'long' ? 'anim-long' : 'anim-short');
+            stageAvatarBg.classList.add(animClass);
+
+            // Tampilkan riak lingkaran getaran
+            document.getElementById('stageRipple1').classList.remove('hidden');
+            document.getElementById('stageRipple2').classList.remove('hidden');
+
+            // 2. Render Pola Ketukan Visual (Titik Pendek / Garis Panjang)
+            rhythmDots.innerHTML = '';
+            animal.patternVisual.forEach((p, idx) => {
+                const el = document.createElement('span');
+                if (p === 'dot') {
+                    el.className = 'inline-block w-5 h-5 rounded-full bg-amber-400 border-2 border-white shadow';
+                    el.title = 'Ketukan Pendek';
+                } else {
+                    el.className = 'inline-block w-14 h-5 rounded-full bg-rose-500 border-2 border-white shadow';
+                    el.title = 'Tarikan Panjang';
+                }
+                rhythmDots.appendChild(el);
+            });
+
+            // 3. Animasi Kartu di Grid (jika sedang di mode belajar)
+            if (highlightCard) {
+                const card = document.getElementById(`card-${animal.id}`);
+                if (card) {
+                    card.classList.add(animClass, 'ring-4', 'ring-amber-400');
+                }
+            }
+
+            // 4. Jalankan Animasi Batang Equalizer Sesuai Profil Binatang
+            let tick = 0;
+            animateEqualizerStep(animal, tick);
+            activeAnimInterval = setInterval(() => {
+                tick++;
+                animateEqualizerStep(animal, tick);
+            }, 130);
+
+            // 5. Picu Getaran Perangkat (Web Vibration API) jika didukung
+            if ('vibrate' in navigator) {
+                try {
+                    navigator.vibrate(animal.vibratePattern);
+                } catch (e) {
+                    // Abaikan jika browser membatasi
+                }
+            }
+
+            // 6. Mainkan Audio Sintesis Opsional (jika tidak di-mute)
+            if (audioEnabled) {
+                playSynthesizedAnimalSound(animal);
+            }
+
+            // Hentikan animasi berulang setelah 1.6 detik agar nyaman dilihat mata
+            activeStopTimeout = setTimeout(() => {
+                stopCurrentAnimation();
+            }, 1600);
+        }
+
+        /**
+         * Menggerakkan 16 batang equalizer berdasarkan profil gelombang binatang
+         */
+        function animateEqualizerStep(animal, tick) {
+            for (let i = 0; i < 16; i++) {
+                const bar = document.getElementById(`eq-bar-${i}`);
+                if (!bar) continue;
+
+                const baseHeight = animal.equalizerProfile[i];
+                // Variasi dinamis agar tampak hidup mengikuti ritme
+                const waveOffset = Math.sin((tick * 1.4) + (i * 0.6)) * 0.22;
+                let finalHeight = Math.max(0.14, Math.min(1.0, baseHeight + waveOffset));
+
+                // Jika ritme pendek, buat efek berkedip naik-turun antar ketukan
+                if (animal.rhythmType === 'short' && tick % 2 === 1) {
+                    finalHeight = Math.max(0.15, finalHeight * 0.45);
+                }
+
+                bar.style.height = `${Math.round(finalHeight * 100)}%`;
+            }
+        }
+
+        /**
+         * Menghentikan animasi yang sedang berjalan dan mereset equalizer ke posisi diam
+         */
+        function stopCurrentAnimation() {
+            if (activeAnimInterval) {
+                clearInterval(activeAnimInterval);
+                activeAnimInterval = null;
+            }
+            if (activeStopTimeout) {
+                clearTimeout(activeStopTimeout);
+                activeStopTimeout = null;
+            }
+
+            // Reset avatar panggung
+            const stageAvatarBg = document.getElementById('stageAvatarBg');
+            if (stageAvatarBg) {
+                stageAvatarBg.classList.remove('anim-short', 'anim-long', 'anim-roar');
+            }
+            document.getElementById('stageRipple1').classList.add('hidden');
+            document.getElementById('stageRipple2').classList.add('hidden');
+
+            // Reset semua kartu binatang
+            ANIMALS.forEach(a => {
+                const c = document.getElementById(`card-${a.id}`);
+                if (c) {
+                    c.classList.remove('anim-short', 'anim-long', 'anim-roar', 'ring-4', 'ring-amber-400');
+                }
+            });
+
+            // Turunkan batang equalizer perlahan
+            for (let i = 0; i < 16; i++) {
+                const bar = document.getElementById(`eq-bar-${i}`);
+                if (bar) bar.style.height = '14%';
+            }
+        }
+
+        /**
+         * SINTESIS SUARA OPSIONAL (WEB AUDIO API)
+         * Membantu siswa dengan sisa pendengaran (hard of hearing) atau pendampingan guru
+         */
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            const btn = document.getElementById('btnToggleAudio');
+            const icon = document.getElementById('audioIcon');
+            const label = document.getElementById('audioLabel');
+
+            if (audioEnabled) {
+                icon.textContent = '🔊';
+                label.textContent = 'Suara: Hidup';
+                btn.className = 'px-3 py-2.5 rounded-2xl border-2 border-slate-800 bg-emerald-100 text-emerald-900 font-extrabold text-xs sm:text-sm shadow-[0_3px_0_#1e293b] active:translate-y-0.5 flex items-center gap-1.5 transition-all';
+            } else {
+                icon.textContent = '🔇';
+                label.textContent = 'Suara: Mati';
+                btn.className = 'px-3 py-2.5 rounded-2xl border-2 border-slate-800 bg-slate-200 text-slate-700 font-extrabold text-xs sm:text-sm shadow-[0_3px_0_#1e293b] active:translate-y-0.5 flex items-center gap-1.5 transition-all';
+            }
+        }
+
+        function playSynthesizedAnimalSound(animal) {
+            try {
+                if (!audioCtx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    audioCtx = new AudioContext();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                let currentTime = audioCtx.currentTime;
+
+                animal.soundSteps.forEach(step => {
+                    if (step.pause) {
+                        currentTime += step.pause;
+                        return;
+                    }
+
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+
+                    osc.type = step.type || 'sine';
+                    osc.frequency.setValueAtTime(step.freqStart, currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(step.freqEnd, currentTime + step.duration);
+
+                    // Envelope lembut agar tidak mengagetkan
+                    gain.gain.setValueAtTime(0.01, currentTime);
+                    gain.gain.linearRampToValueAtTime(0.18, currentTime + 0.03);
+                    gain.gain.exponentialRampToValueAtTime(0.001, currentTime + step.duration);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+
+                    osc.start(currentTime);
+                    osc.stop(currentTime + step.duration + 0.02);
+
+                    currentTime += step.duration;
+                });
+            } catch (err) {
+                // Abaikan error audio jika browser memblokir autoplay
+            }
+        }
+
+        /**
+         * PERPINDAHAN ANTARA MODE BELAJAR & MODE KUIS
+         */
+        function switchMode(mode) {
+            stopCurrentAnimation();
+            const btnBelajar = document.getElementById('btnModeBelajar');
+            const btnKuis = document.getElementById('btnModeKuis');
+            const secBelajar = document.getElementById('sectionBelajar');
+            const secKuis = document.getElementById('sectionKuis');
+
+            if (mode === 'belajar') {
+                btnBelajar.className = 'px-3 sm:px-4 py-2 rounded-xl font-extrabold text-sm sm:text-base transition-all bg-sky-500 text-white shadow-[0_3px_0_#0369a1] flex items-center gap-1.5';
+                btnKuis.className = 'px-3 sm:px-4 py-2 rounded-xl font-extrabold text-sm sm:text-base transition-all text-slate-700 hover:bg-white flex items-center gap-1.5';
+                secBelajar.classList.remove('hidden');
+                secKuis.classList.add('hidden');
+            } else {
+                btnKuis.className = 'px-3 sm:px-4 py-2 rounded-xl font-extrabold text-sm sm:text-base transition-all bg-purple-600 text-white shadow-[0_3px_0_#581c87] flex items-center gap-1.5';
+                btnBelajar.className = 'px-3 sm:px-4 py-2 rounded-xl font-extrabold text-sm sm:text-base transition-all text-slate-700 hover:bg-white flex items-center gap-1.5';
+                secBelajar.classList.add('hidden');
+                secKuis.classList.remove('hidden');
+                startQuiz();
+            }
+        }
+
+        /**
+         * LOGIKA MODE KUIS INTERAKTIF (TEBAK BUNYI BINATANG)
+         */
+        function startQuiz() {
+            // Acak urutan binatang untuk dijadikan 5 soal
+            const shuffled = [...ANIMALS].sort(() => Math.random() - 0.5);
+            quizQuestions = shuffled.slice(0, TOTAL_QUIZ_QUESTIONS);
+            currentQuizIndex = 0;
+            quizScore = 0;
+
+            document.getElementById('quizTotal').textContent = TOTAL_QUIZ_QUESTIONS;
+            document.getElementById('quizPlayArea').classList.remove('hidden');
+            document.getElementById('quizResultArea').classList.add('hidden');
+
+            updateQuizStarsUI();
+            loadQuizQuestion();
+        }
+
+        function updateQuizStarsUI() {
+            const container = document.getElementById('quizStarsContainer');
+            container.innerHTML = '';
+            for (let i = 0; i < TOTAL_QUIZ_QUESTIONS; i++) {
+                const star = document.createElement('span');
+                if (i < quizScore) {
+                    star.textContent = '⭐';
+                    star.className = 'star-win';
+                } else {
+                    star.textContent = '☆';
+                    star.className = 'text-slate-300';
+                }
+                container.appendChild(star);
+            }
+        }
+
+        function loadQuizQuestion() {
+            quizAnswered = false;
+            const targetAnimal = quizQuestions[currentQuizIndex];
+
+            document.getElementById('quizNumber').textContent = currentQuizIndex + 1;
+            document.getElementById('quizClueText').textContent = `"${targetAnimal.onomatopoeia}"`;
+            document.getElementById('quizClueHint').textContent = `Ciri bunyi: ${targetAnimal.description}`;
+
+            const feedbackBox = document.getElementById('quizFeedback');
+            feedbackBox.classList.add('hidden');
+
+            // Tampilkan gelombang visual rahasia di panggung atas (sembunyikan nama & gambar binatang)
+            showSecretQuizWaveOnStage(targetAnimal);
+
+            // Buat 3 pilihan jawaban (1 benar, 2 pengecoh)
+            const distractors = ANIMALS.filter(a => a.id !== targetAnimal.id)
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 2);
+            const options = [targetAnimal, ...distractors].sort(() => Math.random() - 0.5);
+
+            const optionsGrid = document.getElementById('quizOptionsGrid');
+            optionsGrid.innerHTML = '';
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.id = `quiz-opt-${opt.id}`;
+                btn.onclick = () => checkQuizAnswer(opt, targetAnimal);
+                btn.className = `bg-white hover:bg-sky-50 rounded-3xl border-4 border-slate-800 p-5 shadow-[0_6px_0_#1e293b] active:translate-y-1 transition-all flex flex-col items-center justify-center gap-3`;
+
+                btn.innerHTML = `
+                    <div class="w-24 h-24 rounded-full ${opt.bgColor} border-3 border-slate-800 flex items-center justify-center text-6xl">
+                        ${opt.emoji}
+                    </div>
+                    <span class="text-xl font-extrabold text-slate-900">${opt.name}</span>
+                `;
+                optionsGrid.appendChild(btn);
+            });
+        }
+
+        /**
+         * Menampilkan gelombang bunyi soal di panggung atas tanpa membocorkan gambar binatangnya
+         */
+        function showSecretQuizWaveOnStage(targetAnimal) {
+            stopCurrentAnimation();
+            document.getElementById('stageOnomatopoeia').textContent = targetAnimal.onomatopoeia;
+            document.getElementById('stageAvatarBg').className = 'w-32 h-32 sm:w-36 sm:h-36 rounded-full bg-purple-100 border-4 border-slate-800 flex items-center justify-center text-7xl sm:text-8xl shadow-inner relative z-10';
+            document.getElementById('stageAvatarBg').textContent = '❓';
+            document.getElementById('stageAnimalName').textContent = 'Siapakah Aku?';
+            document.getElementById('stageRhythmTag').textContent = `Ritme: ${targetAnimal.rhythmLabel}`;
+            document.getElementById('stageDescription').textContent = targetAnimal.description;
+
+            // Pola ketukan
+            const rhythmDots = document.getElementById('rhythmDots');
+            rhythmDots.innerHTML = '';
+            targetAnimal.patternVisual.forEach(p => {
+                const el = document.createElement('span');
+                el.className = p === 'dot'
+                    ? 'inline-block w-5 h-5 rounded-full bg-amber-400 border-2 border-white'
+                    : 'inline-block w-14 h-5 rounded-full bg-rose-500 border-2 border-white';
+                rhythmDots.appendChild(el);
+            });
+
+            // Jalankan gelombang & getaran
+            let tick = 0;
+            animateEqualizerStep(targetAnimal, tick);
+            activeAnimInterval = setInterval(() => {
+                tick++;
+                animateEqualizerStep(targetAnimal, tick);
+            }, 130);
+
+            if ('vibrate' in navigator) {
+                try { navigator.vibrate(targetAnimal.vibratePattern); } catch (e) {}
+            }
+            if (audioEnabled) {
+                playSynthesizedAnimalSound(targetAnimal);
+            }
+
+            activeStopTimeout = setTimeout(() => {
+                stopCurrentAnimation();
+            }, 1600);
+        }
+
+        function replayQuizClue() {
+            if (quizQuestions[currentQuizIndex]) {
+                showSecretQuizWaveOnStage(quizQuestions[currentQuizIndex]);
+            }
+        }
+
+        function checkQuizAnswer(selected, target) {
+            if (quizAnswered) return;
+            quizAnswered = true;
+
+            const feedbackBox = document.getElementById('quizFeedback');
+            const selectedBtn = document.getElementById(`quiz-opt-${selected.id}`);
+            const targetBtn = document.getElementById(`quiz-opt-${target.id}`);
+
+            // Tampilkan jawaban asli di panggung visual atas
+            triggerAnimalVisual(target, false);
+
+            feedbackBox.classList.remove('hidden', 'bg-emerald-100', 'border-emerald-500', 'text-emerald-900', 'bg-rose-100', 'border-rose-500', 'text-rose-900');
+
+            if (selected.id === target.id) {
+                quizScore++;
+                updateQuizStarsUI();
+                selectedBtn.classList.add('bg-emerald-200', 'border-emerald-600', 'ring-4', 'ring-emerald-400');
+                feedbackBox.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900');
+                feedbackBox.innerHTML = `🎉 BENAR! Itu adalah <b>${target.name}</b> (${target.onomatopoeia})!`;
+            } else {
+                selectedBtn.classList.add('bg-rose-200', 'border-rose-600', 'opacity-80');
+                targetBtn.classList.add('bg-emerald-200', 'border-emerald-600', 'ring-4', 'ring-emerald-400');
+                feedbackBox.classList.add('bg-rose-100', 'border-rose-500', 'text-rose-900');
+                feedbackBox.innerHTML = `💡 Hampir tepat! Bunyi <b>${target.onomatopoeia}</b> adalah milik <b>${target.name}</b>.`;
+            }
+
+            // Lanjut ke soal berikutnya setelah 2.3 detik
+            setTimeout(() => {
+                currentQuizIndex++;
+                if (currentQuizIndex < TOTAL_QUIZ_QUESTIONS) {
+                    loadQuizQuestion();
+                } else {
+                    finishQuiz();
+                }
+            }, 2300);
+        }
+
+        function finishQuiz() {
+            stopCurrentAnimation();
+            document.getElementById('quizPlayArea').classList.add('hidden');
+            document.getElementById('quizResultArea').classList.remove('hidden');
+            document.getElementById('quizFinalScoreText').textContent =
+                `Kamu berhasil mengumpulkan ${quizScore} dari ${TOTAL_QUIZ_QUESTIONS} bintang!`;
+        }
+    </script>
+</body>
+</html>
